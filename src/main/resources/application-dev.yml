@@ -1,0 +1,59 @@
+front-location: D:\JetBrains\workspace\iokfine-front\dist\
+appName=星星小店
+
+proxy:
+  able: true
+  socks-host: 127.0.0.1
+  socks-port: 1080
+
+spring:
+  redis:
+    database: 3
+    host: 120.79.172.144
+    password: Redistesting2020
+    pool:
+      max-active: 8
+      max-idle: 8
+      max-wait: -1
+      min-idle: 0
+    port: 6379
+    timeout: 5000
+  mail:
+    host: smtp.163.com
+    username: nicolas211@163.com
+    password: USHCTQIBEPKSIHVB
+  jackson:
+    time-zone: GMT+8
+  datasource:
+    druid:
+      url: jdbc:sqlite:db/db.sqlite
+      driverClassName: org.sqlite.JDBC
+      username:
+      password:
+      initial-size: 1
+      min-idle: 1
+      max-active: 1
+      max-wait: 60000
+      pool-prepared-statements: false
+      max-pool-prepared-statement-per-connection-size: -1
+      #      validation-query: SELECT '1' from sqlite_master
+      #      validation-query-timeout: 3
+      test-on-borrow: true
+      test-on-return: false
+      test-while-idle: true
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+  #  datasource:
+  #    url: jdbc:mysql://localhost:3306/iokfine?useSSL=false&serverTimezone=Asia/Shanghai&useSSL=false
+  #    driverClassName: com.mysql.cj.jdbc.Driver
+  #    username: root
+  #    password: 123456
+  jpa:
+    #    database-platform: org.hibernate.dialect.MySQL5Dialect
+    database-platform: org.hibernate.dialect.SQLiteDialect
+    hibernate:
+      use-new-id-generator-mappings: true
+      ddl-auto: update
+    generate-ddl: true
+    show-sql: false
+    open-in-view: true
