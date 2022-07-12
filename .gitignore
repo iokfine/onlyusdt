@@ -1,8 +1,7 @@
 HELP.md
 target/
 view/
-db/
-db/mydata.db
+db/sqlite.db
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
