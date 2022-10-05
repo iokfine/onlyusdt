@@ -1,5 +1,6 @@
 package com.iokfine.data.modules.user.rest;
 
+import cn.hutool.core.date.DateUtil;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Maps;
 import com.iokfine.data.exception.CommonException;
@@ -16,6 +17,7 @@ import com.iokfine.data.modules.security.utils.RsaUtils;
 import com.iokfine.data.modules.security.utils.SecurityUtils;
 import com.iokfine.data.modules.security.utils.TokenProvider;
 import com.iokfine.data.modules.user.dao.model.User;
+import com.iokfine.data.modules.user.domain.UserBO;
 import com.iokfine.data.modules.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -69,19 +71,28 @@ public class UserController {
         // Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         // SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = tokenProvider.createToken(authentication);
-        final JwtUserDto jwtUserDto = (JwtUserDto) authentication.getPrincipal();
+//        final JwtUserDto jwtUserDto = (JwtUserDto) authentication.getPrincipal();
+        UserBO userBO = userService.findOne(authUser.getUsername());
         // 返回 token 与 用户信息
         Map<String, Object> authInfo = new HashMap<String, Object>(2) {{
             put("token", properties.getTokenStartWith() + token);
-            put("user", jwtUserDto);
+            put("user", userBO);
         }};
+        if(DateUtil.parseDateTime(userBO.getDueTime()).getTime() <System.currentTimeMillis()){
+            throw new CommonException(99998,"The account has expired, please renew it!");
+        }
 //        emailClient.gmailSender(jwtUserDto.getUser().getMail(),jwtUserDto.getUsername()+ "账户登录！","查看是否本人");
         return RespMsg.successResult(authInfo);
     }
 
     @GetMapping(value = "/info")
     public RespMsg getUserInfo() {
-        return RespMsg.successResult(SecurityUtils.getCurrentUser());
+        String userName = SecurityUtils.getCurrentUser().getUser().getUserName();
+        UserBO userBO = userService.findOne(userName);
+        if(DateUtil.parseDateTime(userBO.getDueTime()).getTime() <System.currentTimeMillis()){
+            userBO.setAvailable(false);
+        }
+        return RespMsg.successResult(userBO);
     }
 
 //    @GetMapping("/code")
@@ -106,23 +117,23 @@ public class UserController {
 
     @AnonymousPostMapping(value = "/register")
     public RespMsg logout(@Validated @RequestBody AuthUserDto authUser) throws Exception {
-        String cacheKey = String.format(RedisKeyConstant.REG_VERIFY_CODE, authUser.getUsername());
-        String code = (String)fastRedisService.get(cacheKey);
-        if(!StringUtils.hasText(code)){
-            return RespMsg.builder().setCode("000001").setMsg("验证码失效").build();
-        }
-        if(!code.equals(authUser.getVerifyCode())){
-            return RespMsg.builder().setCode("000001").setMsg("验证码失效").build();
-        }
+//        String cacheKey = String.format(RedisKeyConstant.REG_VERIFY_CODE, authUser.getUsername());
+//        String code = (String)fastRedisService.get(cacheKey);
+//        if(!StringUtils.hasText(code)){
+//            return RespMsg.builder().setCode("000001").setMsg("验证码失效").build();
+//        }
+//        if(!code.equals(authUser.getVerifyCode())){
+//            return RespMsg.builder().setCode("000001").setMsg("验证码失效").build();
+//        }
         UserDto byName = userService.findByName(authUser.getUsername());
         if(byName != null){
-            return RespMsg.successResult("邮箱被占用");
+            return RespMsg.successResult("Username already exists!");
         }
         // 密码解密
         String password = RsaUtils.decryptByPrivateKey(privateKey, authUser.getPwd());
         authUser.setPassword(password);
         userService.addUser(authUser);
-        fastRedisService.remove(cacheKey);
+//        fastRedisService.remove(cacheKey);
         return RespMsg.successResult("status",true);
     }
 }

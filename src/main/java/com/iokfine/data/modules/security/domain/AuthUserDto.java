@@ -32,7 +32,7 @@ public class AuthUserDto {
     private String password;
     private String pwd;
     private String rePwd;
-    private String verifyCode;
+    private String refferId;
 
     private String code;
 

@@ -19,6 +19,7 @@ import com.iokfine.data.exception.BadRequestException;
 import com.iokfine.data.exception.CommonException;
 import com.iokfine.data.exception.EntityExistException;
 import com.iokfine.data.exception.EntityNotFoundException;
+import com.iokfine.data.modules.core.domain.base.RespMsg;
 import com.iokfine.data.utils.ThrowableUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -108,8 +109,11 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(CommonException.class)
-    public ResponseEntity<ApiError> handleCommonException(CommonException e){
-        return buildResponseEntity(ApiError.error(e.getMessage()));
+    public ResponseEntity<RespMsg> handleCommonException(CommonException e){
+        RespMsg build = RespMsg.builder().build();
+        build.setCode(e.getBizCode()+"");
+        build.setMsg(e.getMsg());
+        return buildResponseEntityCommon(build);
     }
 
     /**
@@ -117,5 +121,12 @@ public class GlobalExceptionHandler {
      */
     private ResponseEntity<ApiError> buildResponseEntity(ApiError apiError) {
         return new ResponseEntity<>(apiError, HttpStatus.valueOf(apiError.getStatus()));
+    }
+
+    /**
+     * 统一返回
+     */
+    private ResponseEntity<RespMsg> buildResponseEntityCommon(RespMsg respMsg) {
+        return new ResponseEntity<>(respMsg, HttpStatus.valueOf(200));
     }
 }

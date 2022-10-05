@@ -36,7 +36,16 @@ public class User {
      * 推荐人
      */
     @Column(name = "reffer_id")
-    private Integer refferid;
+    private String refferid;
+
+    /**
+     * 到期时间
+     */
+    @Column(name = "due_time")
+    private String dueTime;
+
+    @Column(name = "account_max")
+    private Integer accountMax;
 
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp

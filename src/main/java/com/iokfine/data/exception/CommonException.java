@@ -15,20 +15,26 @@
  */
 package com.iokfine.data.exception;
 
+import lombok.Data;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-@Getter
+@Data
 public class CommonException extends RuntimeException{
+
+    private Integer bizCode = 999999;
+    private String msg;
+
 
 
     public CommonException(String msg){
-        super(msg);
+        this.msg = msg;
     }
 
-    public CommonException(HttpStatus status, String msg){
-        super(msg);
+    public CommonException(Integer bizCode, String msg){
+        this.bizCode = bizCode;
+        this.msg = msg;
     }
 }

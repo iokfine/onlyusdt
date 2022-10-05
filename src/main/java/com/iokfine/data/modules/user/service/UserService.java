@@ -17,6 +17,7 @@ package com.iokfine.data.modules.user.service;
 
 import com.iokfine.data.modules.security.domain.AuthUserDto;
 import com.iokfine.data.modules.security.domain.UserDto;
+import com.iokfine.data.modules.user.domain.UserBO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,6 +47,8 @@ public interface UserService {
      * @return /
      */
     UserDto findByName(String userName);
+
+    UserBO findOne(String userName);
 
     void addUser(AuthUserDto authUser);
 }

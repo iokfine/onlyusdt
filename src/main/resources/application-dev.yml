@@ -1,5 +1,5 @@
 front-location: D:\JetBrains\workspace\iokfine-front\dist\
-appName=星星小店
+appName: 星星小店
 
 proxy:
   able: true
@@ -55,5 +55,5 @@ spring:
       use-new-id-generator-mappings: true
       ddl-auto: update
     generate-ddl: true
-    show-sql: false
+    show-sql: true
     open-in-view: true
